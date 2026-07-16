@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株式会社TEI コーポレートTOP ワイヤーフレーム（構造設計）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --line:#c9ccd1; --line2:#e2e4e8; --ink:#2a2f36; --sub:#6b727c;
+  --wire:#eef0f2; --wireln:#d3d7dc; --accent:#1f6b4a; --note:#2f7d59;
+  --gate:#b23a2a; /* 設計意図の朱（企画書の朱赤の位置示唆用・WFはグレー基調） */
+  --container:1180px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Noto Sans JP",sans-serif;color:var(--ink);background:#f6f7f8;line-height:1.75;font-size:15px;-webkit-font-smoothing:antialiased;}
+.container{max-width:var(--container);margin:0 auto;padding:0 24px;}
+h1,h2,h3,h4{margin:0;font-weight:700;}
+p{margin:0;}
+a{color:inherit;}
+small{font-size:12px;}
+
+/* ドキュメントヘッダ */
+.doc-head{background:#fff;border-bottom:1px solid var(--line);padding:26px 0 22px;}
+.doc-head .container{position:relative;}
+.doc-title{font-size:22px;font-weight:900;letter-spacing:.02em;}
+.doc-sub{color:var(--sub);font-size:13px;margin-top:6px;}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;font-size:12px;color:var(--sub);}
+.legend .sw{display:inline-block;width:26px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px;border:1px solid var(--wireln);}
+.sw.gray{background:var(--wire);}
+.sw.gate{background:#f2ddd8;border-color:#e3b7ad;}
+.sw.note{background:#e5f2ec;border-color:#bfe0d0;}
+
+/* 要件メモ枠 */
+.brief{background:#fffdf5;border:1px solid #e9e2c4;border-radius:10px;padding:18px 22px;margin:24px auto;}
+.brief h2{font-size:15px;color:#8a7328;letter-spacing:.04em;margin-bottom:10px;}
+.brief dl{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0;font-size:13.5px;}
+.brief dt{color:#8a7328;font-weight:700;}
+.brief dd{margin:0;color:#4a4636;}
+
+/* パターン切替タブ表記 */
+.tabs{display:flex;gap:0;margin:26px auto 0;border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:640px;}
+.tabs .tab{flex:1;text-align:center;padding:12px 10px;font-size:13px;background:#fff;color:var(--sub);border-right:1px solid var(--line2);}
+.tabs .tab:last-child{border-right:0;}
+.tabs .tab.on{background:#eef5f1;color:var(--accent);font-weight:700;}
+
+/* セクションブロック */
+.sec{background:#fff;border:1px solid var(--line);border-radius:12px;margin:20px auto;overflow:hidden;}
+.sec-h{display:flex;align-items:baseline;gap:12px;padding:14px 22px;border-bottom:1px dashed var(--line);background:#fafbfc;}
+.sec-no{font-size:12px;color:var(--sub);font-weight:700;letter-spacing:.12em;}
+.enlabel{font-size:11px;letter-spacing:.22em;color:var(--accent);font-weight:700;text-transform:uppercase;}
+.sec-h h2{font-size:16px;}
+.sec-body{padding:22px;}
+.badge{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:20px;background:#eef5f1;color:var(--accent);border:1px solid #cfe5da;margin-left:8px;font-weight:700;}
+.badge.new{background:#fbeee9;color:var(--gate);border-color:#e9c7bd;}
+
+/* wire-box */
+.wire{background:var(--wire);border:1px dashed var(--wireln);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#9aa1a9;font-size:12px;text-align:center;padding:10px;}
+.wire.arch{border-radius:120px 120px 12px 12px;} /* アーチ窓モチーフ */
+.txtline{height:10px;background:#e9ebee;border-radius:5px;margin:7px 0;}
+.txtline.w80{width:80%;}.txtline.w60{width:60%;}.txtline.w40{width:40%;}.txtline.w90{width:90%;}
+
+/* 設計意図注記 */
+.note{border-left:4px solid var(--note);background:#f2f9f5;padding:10px 14px;margin-top:16px;font-size:12.5px;color:#2c5745;border-radius:0 6px 6px 0;}
+.note b{color:#1f6b4a;}
+
+/* ヘッダーWF */
+.wf-header .nav{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;font-size:13px;color:var(--sub);}
+.wf-header .logo{width:120px;height:34px;background:var(--wire);border:1px dashed var(--wireln);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#9aa1a9;}
+.pill{border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12px;}
+.pill.cta{background:#333a42;color:#fff;border-color:#333a42;}
+.spacer{flex:1;}
+
+/* ヒーロー D 非対称グリッド */
+.hero-grid{display:grid;grid-template-columns:1.55fr 1fr;grid-template-rows:auto auto;gap:14px;}
+.hero-main{grid-row:1 / span 2;min-height:340px;position:relative;padding:26px;}
+.hero-main .kicker{font-size:11px;letter-spacing:.24em;color:var(--gate);font-weight:700;}
+.hero-main .copy{font-size:30px;font-weight:900;line-height:1.4;margin:14px 0;color:#3a3f46;}
+.hero-main .lead{font-size:14px;color:#6b727c;max-width:80%;}
+.hero-main .since{position:absolute;right:22px;bottom:20px;font-size:12px;color:#8a9098;letter-spacing:.1em;}
+.hero-sub{min-height:160px;}
+.hero-cta{display:flex;gap:12px;margin-top:8px;}
+.btn{border-radius:8px;padding:11px 18px;font-size:13px;font-weight:700;text-align:center;}
+.btn.primary{background:#c9a03a33;border:1px dashed #c9a03a;color:#7a6320;}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--sub);}
+.play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:#ffffffcc;border:1px solid var(--wireln);display:flex;align-items:center;justify-content:center;color:#6b727c;font-size:20px;}
+
+/* 汎用グリッド */
+.grid{display:grid;gap:16px;}
+.g2{grid-template-columns:repeat(2,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+.card{border:1px solid var(--line2);border-radius:10px;padding:16px;background:#fff;}
+.stat .num{font-size:34px;font-weight:900;color:#3a3f46;font-family:Georgia,"Times New Roman",serif;}
+.stat .lbl{font-size:12px;color:var(--sub);margin-top:2px;}
+.svc .thumb{height:110px;margin-bottom:12px;}
+.newsrow{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--line2);font-size:13px;}
+.newsrow .date{color:var(--sub);width:110px;flex:none;font-family:Georgia,serif;}
+.tag{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 8px;color:var(--sub);}
+
+/* CTA分岐 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.split .card{padding:22px;text-align:center;}
+
+/* フッター */
+.wf-footer{background:#eef0f2;}
+.fcols{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:20px;padding:26px 0;}
+.fcols h4{font-size:12px;color:var(--ink);margin-bottom:10px;}
+.fcols li{list-style:none;font-size:12px;color:var(--sub);padding:3px 0;}
+.fcols ul{margin:0;padding:0;}
+
+/* SP版 */
+.device-tag{text-align:center;font-size:12px;color:var(--sub);letter-spacing:.1em;margin:8px 0;}
+.sp-wrap{max-width:390px;margin:0 auto;border:1px solid var(--line);border-radius:22px;background:#fff;padding:12px;}
+.sp-header{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--sub);border-bottom:1px solid var(--line2);padding-bottom:10px;}
+.sp-header .logo{width:84px;height:24px;background:var(--wire);border:1px dashed var(--wireln);border-radius:4px;}
+.sp-burger{margin-left:auto;font-size:18px;}
+.sp-sec{border:1px solid var(--line2);border-radius:8px;padding:12px;margin-top:12px;}
+.sp-sec .enlabel{display:block;margin-bottom:6px;}
+
+.foot-doc{color:var(--sub);font-size:12px;text-align:center;padding:30px 0 50px;}
+@media(max-width:820px){
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-main{grid-row:auto;}
+  .g4{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:1fr;}
+  .fcols{grid-template-columns:1fr 1fr;}
+  .split{grid-template-columns:1fr;}
+  .brief dl{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ ドキュメントヘッダ ============ -->
+<div class="doc-head">
+  <div class="container">
+    <div class="doc-title">株式会社TEI ｜ コーポレートTOP ワイヤーフレーム（構造設計）</div>
+    <div class="doc-sub">デザイン前の構造・導線・要素配置の設計図。色/写真/フォントは次工程（デザイン課）で確定。／ 企画コンセプト「旅と、人の往来を支えて半世紀。」／ ヒーロー型 <b>D＝非対称グリッド＋アーチ窓モチーフ</b></div>
+    <div class="legend">
+      <span><span class="sw gray"></span>グレー＝要素の枠（wire-box）</span>
+      <span><span class="sw gate"></span>朱＝アクセント位置の示唆（デザイン課で朱赤に）</span>
+      <span><span class="sw note"></span>緑の注記＝設計意図（提案説明用）</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 要件メモ -->
+  <div class="brief">
+    <h2>■ 要件メモ（デザイン課が必ず確認）</h2>
+    <dl>
+      <dt>クライアント</dt><dd>株式会社TEI（ティー・イー・アイ）／旅行・航空業界の人材派遣・添乗員派遣のパイオニア（創業1976＝半世紀）</dd>
+      <dt>現サイト</dt><dd>https://www.t-e-i.co.jp/ （CMS: WordPress／1ドメイン統合・コーポ＋採用＋専門）</dd>
+      <dt>依頼</dt><dd>TOPリニューアル デザイン案「<b>通常パターン＋動画パターン</b>」（動画MVは Seedance 生成OK）</dd>
+      <dt>配色（現サイトに寄せる）</dt><dd>藍紺 #15335C ／ 朱赤 #DA3B26 ／ 山吹 #E5A02C ／ 生成り #FBF7EF ／ 墨紺 #1D2733（明るくくっきり・暗色オーバーレイ禁止）</dd>
+      <dt>フォント</dt><dd>見出し=Shippori Mincho（明朝主役）／本文=Murecho／欧文=Fraunces</dd>
+      <dt>トンマナ</dt><dd>旅情ある上質エディトリアル／装飾モチーフ＝アーチ窓（旅のゲート）＋対角の動線</dd>
+      <dt>使用素材</dt><dd>現サイト画像\（スタッフ・インバウンド・富士山/桜・service_img群）＋ロゴ。汎用オフィス画像は不使用</dd>
+    </dl>
+  </div>
+
+  <!-- パターン表記 -->
+  <div class="tabs">
+    <div class="tab on">本WF＝共通構造（通常／動画で共通）</div>
+    <div class="tab">通常パターン：ヒーロー大ブロック＝静止アーチ写真</div>
+    <div class="tab">動画パターン：同ブロック＝Seedance動画に差替</div>
+  </div>
+  <div class="note" style="margin-top:14px;"><b>2案の差分は「ヒーロー左大ブロック」のみ</b>：通常＝静止写真／動画＝Seedance動画（空港ロビー→添乗員が旅客を案内→富士山・桜へパン、16:9・明るい・軽い白ベールで可読性確保、フォールバックは同構図静止画）。以降のセクションは両案共通。</div>
+
+  <!-- ============ 01 ヘッダー ============ -->
+  <div class="sec wf-header">
+    <div class="sec-h"><span class="sec-no">01</span><span class="enlabel">Global Header</span><h2>ヘッダー／グローバルナビ</h2></div>
+    <div class="sec-body">
+      <div class="nav">
+        <div class="logo">TEIロゴ</div>
+        <span>事業紹介</span><span>TEIの強み</span><span>会社案内</span><span>導入事例・実績</span><span>コラム</span>
+        <span class="pill">採用情報 ↗</span><span class="pill">お仕事をお探しの方 ↗</span>
+        <span class="spacer"></span>
+        <span class="pill">EN</span><span class="pill">よくある質問</span><span class="pill cta">お問い合わせ／資料請求</span>
+      </div>
+      <div class="note"><b>設計意図</b>：BtoB発注者が主対象なのでヘッダーCTAは「お問い合わせ／資料請求」を最右に固定。求職導線は「採用情報↗（採用TOP）」「お仕事をお探しの方↗（専門/expert）」を独立ボタン化し、<b>発注者と求職者を入口で振り分け</b>。多言語(EN)は訪日インバウンド事業の会社として明示。</div>
+    </div>
+  </div>
+
+  <!-- ============ 02 ヒーロー（型D 非対称グリッド） ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">02</span><span class="enlabel">Hero — Asymmetric Grid</span><h2>メインビジュアル（型D：非対称グリッド＋アーチ窓）</h2></div>
+    <div class="sec-body">
+      <div class="hero-grid">
+        <div class="wire arch hero-main">
+          <div style="align-self:flex-start;text-align:left;width:100%;">
+            <div class="kicker">TRAVEL &amp; PEOPLE ／ SINCE 1976</div>
+            <div class="copy">旅と、人の往来を<br>支えて半世紀。</div>
+            <div class="lead">添乗・空港・インバウンド・MICEまで。人材で「おもてなしの最前線」を支えます。</div>
+          </div>
+          <div class="hero-cta">
+            <div class="btn primary">サービスを見る</div>
+            <div class="btn ghost">資料請求</div>
+          </div>
+          <div class="play" title="動画パターン時のみ表示">▶</div>
+          <div class="since">大ブロック＝旅×人の実写真（通常）／ Seedance動画（動画パターン）</div>
+        </div>
+        <div class="wire arch hero-sub" style="border-radius:90px 12px 12px 12px;">小①：空港・エアラインスタッフ</div>
+        <div class="wire arch hero-sub" style="border-radius:12px 90px 90px 12px;">小②：インバウンド交流／富士山・桜</div>
+      </div>
+      <div class="note"><b>設計意図（なぜ型Dか）</b>：TEIは「旅先の風景」と「働くスタッフ」の実写真が豊富。1枚写真や左右分割より、<b>大小ブロックの非対称グリッドで“人の往来の躍動”と素材の豊富さを一目で提示</b>。写真をアーチ窓（旅のゲート＝鳥居・搭乗ゲート・トンネル）で切り抜き、右側の小ブロックを階段状にずらして対角の動線を作る。確定主コピー「旅と、人の往来を支えて半世紀。」をMV上に配置。<b>過去案件（左右分割/全面写真型）と型を変更。</b></div>
+    </div>
+  </div>
+
+  <!-- ============ 03 リード ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">03</span><span class="enlabel">Lead — Pioneer Message</span><h2>リード：パイオニア宣言</h2></div>
+    <div class="sec-body">
+      <div style="text-align:center;max-width:760px;margin:0 auto;">
+        <div class="txtline w40" style="margin:0 auto;"></div>
+        <p style="font-size:20px;font-weight:700;color:#3a3f46;margin:14px 0;">観光産業を中心に、人材で人の往来を支える。<span style="color:var(--gate)">添乗員派遣のパイオニア。</span></p>
+        <div class="txtline w80" style="margin:8px auto;"></div>
+        <div class="txtline w60" style="margin:8px auto;"></div>
+      </div>
+      <div class="note"><b>設計意図</b>：ヒーロー直後に会社の存在意義を1段落で言語化。人材派遣は「人＝商品」の信頼業なので、<b>数字より先に“何者か（パイオニア／おもてなしの最前線）”を宣言</b>し、以降の事業・数字・強みへ読み進める土台を作る。朱1行で強調。</div>
+    </div>
+  </div>
+
+  <!-- ============ 04 事業領域 ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">04</span><span class="enlabel">Services — Business Fields</span><h2>事業領域（サービス）</h2></div>
+    <div class="sec-body">
+      <div class="grid g3">
+        <div class="card svc"><div class="wire arch thumb">添乗員派遣</div><div class="txtline w80"></div><div class="txtline w60"></div></div>
+        <div class="card svc"><div class="wire arch thumb">人材派遣・紹介</div><div class="txtline w80"></div><div class="txtline w60"></div></div>
+        <div class="card svc"><div class="wire arch thumb">空港・エアライン関連</div><div class="txtline w80"></div><div class="txtline w60"></div></div>
+        <div class="card svc"><div class="wire arch thumb">訪日インバウンド</div><div class="txtline w80"></div><div class="txtline w60"></div></div>
+        <div class="card svc"><div class="wire arch thumb">学会・イベント運営</div><div class="txtline w80"></div><div class="txtline w60"></div></div>
+        <div class="card svc"><div class="wire arch thumb">研修・教育／旅程管理研修</div><div class="txtline w80"></div><div class="txtline w60"></div></div>
+      </div>
+      <div class="note"><b>設計意図</b>：発注者が最初に知りたいのは「何を頼めるか」。<b>数字より前に事業領域を6枚のアーチ窓カードで提示</b>し、各サービス下層へ送客。実写真（service_img群）活用で「画像が入っていない」FBを回避。カード順は主力の添乗員派遣→人材派遣→空港→インバウンド→イベント→研修の売上/認知順。</div>
+    </div>
+  </div>
+
+  <!-- ============ 05 数字で見るTEI ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">05</span><span class="enlabel">By the Numbers</span><h2>数字で見るTEI <span class="badge new">★新設</span></h2></div>
+    <div class="sec-body">
+      <div class="grid g4">
+        <div class="card stat"><div class="num">1976</div><div class="lbl">創業（半世紀の実績）</div></div>
+        <div class="card stat"><div class="num">50年</div><div class="lbl">おもてなしの歩み</div></div>
+        <div class="card stat"><div class="num">9拠点</div><div class="lbl">全国の支店</div></div>
+        <div class="card stat"><div class="num">全国</div><div class="lbl">対応エリア</div></div>
+      </div>
+      <div class="note"><b>設計意図</b>：事業領域で興味を持った発注者に<b>信頼の裏付け（規模・歴史）を数値で提示</b>。数字は欧文Fraunces大サイズで旅雑誌の見出し風に。パイオニア宣言→事業→数字の順で「信頼の積み上げ」を作る。</div>
+    </div>
+  </div>
+
+  <!-- ============ 06 TEIの強み ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">06</span><span class="enlabel">Strengths — Why TEI</span><h2>TEIの強み（課題→解決）</h2></div>
+    <div class="sec-body">
+      <div class="grid g3">
+        <div class="card"><b>観光業界の人材派遣パイオニア</b><div class="txtline w90"></div><div class="txtline w60"></div></div>
+        <div class="card"><b>即戦力・接遇のプロを供給</b><div class="txtline w90"></div><div class="txtline w60"></div></div>
+        <div class="card"><b>半世紀の研修ノウハウ・育成力</b><div class="txtline w90"></div><div class="txtline w60"></div></div>
+      </div>
+      <div class="note"><b>設計意図</b>：他社比較の意思決定材料。<b>「発注者の課題（人手不足・接遇品質・繁閑）→TEIの解決」の順</b>で3点に集約。研修事業＝品質担保の根拠として強みに組み込む。</div>
+    </div>
+  </div>
+
+  <!-- ============ 07 導入事例・お客様の声 ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">07</span><span class="enlabel">Case Studies &amp; Voice</span><h2>導入事例・お客様の声 <span class="badge">統合強化</span></h2></div>
+    <div class="sec-body">
+      <div class="grid g2">
+        <div class="card" style="display:flex;gap:14px;"><div class="wire" style="width:120px;height:90px;flex:none;border-radius:8px;">事例①</div><div style="flex:1;"><div class="txtline w80"></div><div class="txtline w90"></div><div class="txtline w40"></div></div></div>
+        <div class="card" style="display:flex;gap:14px;"><div class="wire" style="width:120px;height:90px;flex:none;border-radius:8px;">事例②</div><div style="flex:1;"><div class="txtline w80"></div><div class="txtline w90"></div><div class="txtline w40"></div></div></div>
+      </div>
+      <div class="note"><b>設計意図</b>：BtoB発注の最終後押しは第三者の実績。強みの直後に<b>導入事例・お客様の声で客観的裏付け</b>を置く（旅行会社・航空・自治体等の声）。</div>
+    </div>
+  </div>
+
+  <!-- ============ 08 News / コラム ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">08</span><span class="enlabel">News &amp; Column</span><h2>お知らせ／コラム <span class="badge new">★コラム新設</span></h2></div>
+    <div class="sec-body">
+      <div class="grid g2" style="gap:26px;">
+        <div>
+          <div style="font-weight:700;margin-bottom:6px;">News</div>
+          <div class="newsrow"><span class="date">2026.07.01</span><span class="tag">お知らせ</span><span>テキストが入ります。</span></div>
+          <div class="newsrow"><span class="date">2026.06.20</span><span class="tag">プレス</span><span>テキストが入ります。</span></div>
+          <div class="newsrow"><span class="date">2026.06.05</span><span class="tag">採用</span><span>テキストが入ります。</span></div>
+        </div>
+        <div>
+          <div style="font-weight:700;margin-bottom:6px;">コラム（GEO/構造化データ対応）</div>
+          <div class="grid g2"><div class="wire arch" style="height:80px;">コラム①</div><div class="wire arch" style="height:80px;">コラム②</div></div>
+        </div>
+      </div>
+      <div class="note"><b>設計意図</b>：更新性とSEO/GEO。Newsは信頼、コラムは「添乗員の仕事とは」等の検索流入＆求職者教育を担う。左News（企業の動き）／右コラム（読み物）で役割分離。</div>
+    </div>
+  </div>
+
+  <!-- ============ 09 CTA分岐 ============ -->
+  <div class="sec">
+    <div class="sec-h"><span class="sec-no">09</span><span class="enlabel">Conversion — Dual Path</span><h2>CTA：導線の分岐（発注者／求職者）</h2></div>
+    <div class="sec-body">
+      <div class="split">
+        <div class="card"><div class="enlabel">FOR CLIENTS</div><h3 style="margin:8px 0;">人材をお探しの企業様</h3><div class="txtline w80" style="margin:0 auto;"></div><div class="btn primary" style="margin-top:12px;">お問い合わせ・資料請求</div></div>
+        <div class="card"><div class="enlabel">FOR JOB SEEKERS</div><h3 style="margin:8px 0;">TEIで働きたい方</h3><div class="txtline w80" style="margin:0 auto;"></div><div class="hero-cta" style="justify-content:center;"><div class="btn ghost">採用情報（新卒・総合職）</div><div class="btn ghost">お仕事をお探しの方（専門）</div></div></div>
+      </div>
+      <div class="note"><b>設計意図</b>：ページ末で改めて<b>2大ターゲットを大きく振り分け</b>。発注者→問い合わせ/資料請求、求職者→採用TOP（/recruit）と専門サイト（/expert・添乗員/通訳/インバウンド常時募集）へ。企画のセクション順「信頼を積んだ上でCVへ」を体現。</div>
+    </div>
+  </div>
+
+  <!-- ============ 10 フッター ============ -->
+  <div class="sec wf-footer">
+    <div class="sec-h"><span class="sec-no">10</span><span class="enlabel">Footer — Full Sitemap</span><h2>フッター（全社サイトマップ展開）</h2></div>
+    <div class="sec-body">
+      <div class="fcols">
+        <div><div class="logo" style="width:120px;height:34px;background:var(--wire);border:1px dashed var(--wireln);border-radius:5px;"></div><div class="txtline w80" style="margin-top:12px;"></div><div class="txtline w60"></div><small style="color:var(--sub)">本社所在地／TEL／個人情報保護方針</small></div>
+        <div><h4>事業紹介</h4><ul><li>添乗員派遣</li><li>人材派遣・紹介</li><li>空港・エアライン</li><li>訪日インバウンド</li><li>学会・イベント</li><li>研修・教育</li></ul></div>
+        <div><h4>会社案内</h4><ul><li>トップメッセージ</li><li>企業理念・沿革</li><li>事業所案内</li><li>女性活躍・働く環境</li><li>導入事例・実績</li></ul></div>
+        <div><h4>採用・募集</h4><ul><li>採用情報（新卒・総合職）</li><li>専門サイト（添乗員/通訳/INB）</li><li>研修・キャリア</li><li>募集要項・エントリー</li></ul></div>
+        <div><h4>サポート</h4><ul><li>お問い合わせ</li><li>資料請求</li><li>よくある質問</li><li>コラム／News</li><li>English</li><li>個人情報保護方針</li></ul></div>
+      </div>
+      <div class="note"><b>設計意図</b>：CLAUDE.md基準の「フッター＝サイトマップ全展開」。1ドメイン統合の全導線（事業/会社/採用/専門/サポート/EN）を網羅し回遊を担保。</div>
+    </div>
+  </div>
+
+  <!-- ============ SP版 ============ -->
+  <div class="device-tag">— スマートフォン版（SP・375〜390px）—</div>
+  <div class="sp-wrap">
+    <div class="sp-header"><div class="logo"></div><span>お仕事をお探しの方 ↗</span><span class="sp-burger">≡</span></div>
+
+    <div class="sp-sec"><span class="enlabel">Hero (D→縦積み)</span>
+      <div class="wire arch" style="height:150px;">大ブロック：静止写真／Seedance動画</div>
+      <div style="font-size:18px;font-weight:900;color:#3a3f46;margin:10px 0;">旅と、人の往来を支えて半世紀。</div>
+      <div class="grid g2"><div class="wire arch" style="height:70px;">小①</div><div class="wire arch" style="height:70px;">小②</div></div>
+      <div class="btn primary" style="margin-top:10px;">サービスを見る</div>
+    </div>
+
+    <div class="sp-sec"><span class="enlabel">Lead</span><div class="txtline w90"></div><div class="txtline w80"></div><small style="color:var(--sub)">パイオニア宣言（朱1行）</small></div>
+
+    <div class="sp-sec"><span class="enlabel">Services</span>
+      <div class="grid g2"><div class="wire arch" style="height:80px;">添乗員派遣</div><div class="wire arch" style="height:80px;">人材派遣</div><div class="wire arch" style="height:80px;">空港</div><div class="wire arch" style="height:80px;">インバウンド</div></div>
+      <small style="color:var(--sub)">※SPは2列。6事業を縦スクロール</small>
+    </div>
+
+    <div class="sp-sec"><span class="enlabel">By the Numbers</span>
+      <div class="grid g2"><div class="card stat" style="padding:10px;"><div class="num" style="font-size:26px;">1976</div><div class="lbl">創業</div></div><div class="card stat" style="padding:10px;"><div class="num" style="font-size:26px;">9</div><div class="lbl">全国拠点</div></div></div>
+    </div>
+
+    <div class="sp-sec"><span class="enlabel">Strengths</span><div class="card" style="margin-bottom:8px;">強み①</div><div class="card">強み②</div></div>
+    <div class="sp-sec"><span class="enlabel">Case / Voice</span><div class="wire" style="height:70px;">事例カルーセル（横スワイプ）</div></div>
+    <div class="sp-sec"><span class="enlabel">News / Column</span><div class="newsrow" style="flex-direction:column;gap:4px;"><span class="date">2026.07.01</span><span>テキストが入ります。</span></div></div>
+    <div class="sp-sec"><span class="enlabel">CTA Dual Path</span><div class="btn primary" style="margin-bottom:8px;">企業様：問い合わせ・資料請求</div><div class="btn ghost">求職者：採用／お仕事を探す</div></div>
+    <div class="sp-sec"><span class="enlabel">Footer</span><div class="txtline w90"></div><div class="txtline w80"></div><small style="color:var(--sub)">アコーディオンでサイトマップ全展開</small></div>
+    <div class="note" style="margin-top:12px;"><b>SP設計意図</b>：親指導線を考え、最上部の追従に「お仕事をお探しの方↗」を残しつつ、CVは末尾のDual Pathに集約。ヒーローの非対称グリッドは<b>大ブロック→小2枚→コピー→CTAの縦積み</b>に再構成（型Dの意図をSPでも保持）。</div>
+  </div>
+
+</div>
+
+<div class="foot-doc">
+  株式会社TEI コーポレートTOP ワイヤーフレーム（構造設計）／ 企画: ヒーロー型D・非対称グリッド＋アーチ窓 ／ 次工程: デザイン課（通常＋動画の2案・配色/フォント/写真を確定）<br>
+  ITLINE ワイヤーフレーム課
+</div>
+
+</body>
+</html>

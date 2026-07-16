@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEI ワイヤーフレーム｜3つのTOPページ</title>
+<style>
+:root{ color-scheme: light;
+  --ink:#222; --sub:#555; --line:#bbb; --line2:#d8d8d8;
+  --box:#eee; --box2:#e2e2e2; --box3:#f4f4f4; --white:#fff;
+  --note:#0b5; --noteb:#e8f7ee; --noted:#0a7a45;
+  --star:#c0392b; --pri:#b8860b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",sans-serif;color:var(--ink);background:#cfcfcf;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 60px}
+.top{position:sticky;top:0;z-index:50;background:#2b2b2b;color:#fff;padding:12px 16px}
+.top h1{font-size:15px;font-weight:700;letter-spacing:.04em}
+.top p{font-size:11.5px;opacity:.7;margin-top:2px}
+.tabs{display:flex;gap:8px;max-width:1120px;margin:14px auto 0;padding:0 16px;flex-wrap:wrap}
+.tab{flex:1;min-width:220px;background:#3a3a3a;color:#ddd;border:1px solid #555;border-radius:8px 8px 0 0;padding:12px 14px;cursor:pointer;font-size:13px;transition:.15s}
+.tab b{font-size:14px;color:#fff;display:block}
+.tab span{font-size:11px;opacity:.65}
+.tab.active{background:#f4f4f4;color:#222;border-color:#f4f4f4}
+.tab.active b{color:#111}
+.tab.active span{opacity:.7}
+.tab .badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;margin-left:6px;vertical-align:1px}
+.badge.star{background:var(--star);color:#fff}
+.page{display:none;background:var(--white);border-radius:0 0 10px 10px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.22)}
+.page.show{display:block}
+.legend{background:#fafafa;border-bottom:1px solid var(--line2);padding:12px 22px;font-size:12px;color:var(--sub);display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.legend .k{display:inline-flex;align-items:center;gap:6px}
+.legend .sw{width:26px;height:14px;border-radius:3px;border:1px solid var(--line)}
+.legend .sw.n{background:var(--noteb);border-color:#bfe6cd}
+.legend .sw.b{background:var(--box)}
+.chrome{background:#ededed;border-bottom:1px solid var(--line2);padding:8px 14px;display:flex;align-items:center;gap:8px}
+.chrome i{width:11px;height:11px;border-radius:50%;background:#ccc;display:inline-block}
+.chrome .url{flex:1;background:#fff;border:1px solid var(--line2);border-radius:20px;padding:5px 14px;font-size:12px;color:#888;margin-left:8px}
+.mock{padding:0}
+.blk{border-bottom:1px dashed var(--line);padding:22px 26px;position:relative}
+.blk:last-child{border-bottom:none}
+.tagno{position:absolute;left:0;top:0;background:#333;color:#fff;font-size:11px;font-weight:700;padding:2px 9px;border-bottom-right-radius:8px;letter-spacing:.05em}
+.blk .inner{margin-top:14px}
+.secname{font-size:12px;font-weight:700;color:#777;letter-spacing:.08em;margin-bottom:4px}
+.ph{background:var(--box);border:1px dashed #c2c2c2;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px;text-align:center;padding:10px}
+.ph.img::before{content:"IMG";opacity:.6}
+.mv{position:relative;border:1px dashed #c2c2c2;border-radius:8px;background:var(--box);min-height:210px;display:flex;align-items:center;padding:26px 30px;overflow:hidden}
+.mv::after{content:"メインビジュアル（背景）";position:absolute;right:14px;bottom:10px;font-size:11px;color:#aaa;opacity:.7}
+.mv .copy{position:relative;z-index:2}
+.mv .h-hero{color:#1a1a1a}
+.mv .btns{margin-top:14px}
+.bar{height:12px;background:var(--box2);border-radius:4px;margin:6px 0}
+.bar.s{width:40%}.bar.m{width:65%}.bar.l{width:88%}
+.h-hero{font-size:30px;font-weight:800;line-height:1.4;color:#1a1a1a}
+.h-hero .sub{display:block;font-size:15px;font-weight:600;color:#666;margin-top:10px}
+.h-sec{font-size:20px;font-weight:800;color:#222;text-align:center}
+.h-sec .en{display:block;font-size:11px;color:#999;letter-spacing:.2em;font-weight:700;margin-bottom:4px}
+.btn{display:inline-block;background:#444;color:#fff;border-radius:6px;padding:11px 22px;font-size:13px;font-weight:700;margin-top:8px}
+.btn.ghost{background:#fff;color:#444;border:1.5px solid #444}
+.grid{display:grid;gap:12px;margin-top:14px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:720px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
+.card{background:var(--box3);border:1px solid var(--line2);border-radius:8px;padding:14px;font-size:12.5px}
+.card .ph{height:78px;margin-bottom:10px}
+.card b{font-size:13.5px;display:block;margin-bottom:4px;color:#333}
+.card p{color:#888;font-size:12px}
+.nav-wire{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.nav-wire .logo{width:78px;height:30px;background:var(--box2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888}
+.nav-wire .lk{font-size:12.5px;color:#666}
+.nav-wire .sp{margin-left:auto}
+.nav-wire .cta{background:#444;color:#fff;border-radius:5px;padding:7px 14px;font-size:12px;font-weight:700}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:center}
+@media(max-width:720px){.two{grid-template-columns:1fr}}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.stat{flex:1;min-width:120px;background:var(--box3);border:1px solid var(--line2);border-radius:8px;padding:12px;text-align:center}
+.stat b{font-size:26px;color:#333;display:block}
+.stat span{font-size:11px;color:#999}
+.note{background:var(--noteb);border-left:4px solid var(--note);border-radius:0 6px 6px 0;padding:9px 13px;margin-top:14px;font-size:12px;color:var(--noted)}
+.note b{color:#086b3a}
+.zonetag{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px;background:#eee;color:#666;margin-bottom:6px}
+.crumb{font-size:11px;color:#999;margin-top:2px}
+.foot-wire{background:#333;color:#bbb;padding:20px 26px;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.cross{background:#fff8e6;border:1px solid #f0dca0;border-radius:8px;padding:12px 16px;margin:0 26px 22px;font-size:12.5px;color:#7a5c00}
+.cross b{color:#8a5a00}
+.sidebanner{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;width:132px}
+.sidebanner .sb{border-radius:8px;padding:12px 10px;font-size:12px;font-weight:700;color:#fff;text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.25);line-height:1.4}
+.sidebanner .sb small{display:block;font-size:9px;font-weight:600;opacity:.85;margin-top:3px}
+.sidebanner .sb.expert{background:#3E7C9B}
+.sidebanner .sb.job{background:#666}
+.sidebanner .sbnote{background:var(--noteb);border-left:4px solid var(--note);border-radius:0 6px 6px 0;padding:7px 9px;font-size:10.5px;color:var(--noted);line-height:1.4}
+@media(max-width:960px){.sidebanner{position:static;transform:none;flex-direction:row;width:auto;margin:0 26px 16px}}
+.ig-icon{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;font-size:10px;font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>株式会社TEI ｜ トップページ ワイヤーフレーム（構造設計）</h1>
+  <p>デザイン前の構造・導線・要素配置の設計図です。色や写真は次段階で確定します。／ 1ドメイン統合・全体コンセプト「半世紀の信頼を、憧れられるブランドへ。」</p>
+</div>
+<div class="tabs">
+  <div class="tab active" data-p="corp"><b>① コーポレートTOP</b><span>/ ｜ 主：BtoB取引先・信頼／採用の入口</span></div>
+  <div class="tab" data-p="recruit"><b>② 採用TOP<span class="badge star">最優先</span></b><span>/recruit/ ｜ 主：新卒・総合職</span></div>
+  <div class="tab" data-p="cond"><b>③ 専門サイトTOP</b><span>/expert/ ｜ 添乗員・通訳ガイド・インバウンド</span></div>
+</div>
+<div class="wrap">
+
+<div class="page show" id="corp">
+  <div class="legend">
+    <span class="k"><span class="sw b"></span>グレー＝要素の枠</span>
+    <span class="k"><span class="sw n"></span>緑の注釈＝配置の狙い（提案説明用）</span>
+    <span class="k">主コピー＝<b style="color:#333">確定コピー</b></span>
+  </div>
+  <div class="chrome"><i></i><i></i><i></i><span class="url">https://www.t-e-i.co.jp/</span></div>
+  <div class="mock">
+
+    <div class="blk"><span class="tagno">01 ヘッダー</span><div class="inner">
+      <div class="nav-wire">
+        <span class="logo">TEI ロゴ</span>
+        <span class="lk">事業紹介</span><span class="lk">TEIの強み</span><span class="lk">会社案内</span><span class="lk">導入事例・実績</span><span class="lk">コラム</span>
+        <span class="lk" style="font-weight:700;color:#b8860b">採用情報</span>
+        <span class="sp"></span>
+        <span class="lk" style="font-size:11.5px">お仕事をお探しの方 ↗</span>
+        <span class="lk" style="font-size:11.5px">研修・セミナー ↗</span>
+        <span class="ig-icon" title="Instagram">IG</span>
+        <span class="lk" style="font-size:11.5px">よくある質問</span>
+        <span class="cta">お問い合わせ</span>
+      </div>
+      <div class="note"><b>狙い：</b>グローバルナビにサイトマップの大項目＋関連サイト(tei-job↗／tei-seminar↗)＋IG。コーポはBtoB主体なのでヘッダーCTAは「お問い合わせ」。求職者向けの採用導線はGナビ「採用情報」＋右追従バナー＋06送客で確保。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">02 メインビジュアル</span><div class="inner">
+      <div class="mv"><div class="copy">
+        <div class="h-hero">旅と、人の往来を支えて半世紀。<span class="sub">添乗・空港・インバウンド・MICEまで。人材で「おもてなしの最前線」を支えます。</span></div>
+      </div></div>
+      <div class="note"><b>狙い／ビジュアル方針：</b>確定主コピー「半世紀の信頼」を配置。<b>背景写真は"働く人・現場のリアル"</b>（添乗員が旅客を案内／空港スタッフ／通訳が訪日客と交流など、TEIの人が輝く瞬間）を大きく使う。箱や図でなく人の表情で、コピー「半世紀の信頼」×ビジュアル「憧れられる＝人が主役」をKV1枚で両立。人材派遣＝人が商品の会社の第一印象を"人・現場の温度"で作る（企画骨子「社内の温かい雰囲気・現場のリアルを伝える」に対応）。※日本人実写素材。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">03 数字で見るTEI</span><div class="inner">
+      <div class="secname">SECTION／実績の可視化 ★新設</div>
+      <div class="stats">
+        <div class="stat"><b>1976</b><span>創業（半世紀）</span></div>
+        <div class="stat"><b>50年</b><span>おもてなしの歩み</span></div>
+        <div class="stat"><b>9拠点</b><span>全国の支店</span></div>
+        <div class="stat"><b>全国</b><span>対応エリア</span></div>
+      </div>
+      <div class="note"><b>狙い：</b>MV「半世紀」の直後に規模・実績を数字で叩き、BtoBに「信頼できる会社か」を一発で掴ませる。→この信頼を土台に事業領域(04)へ。「信頼で始まり信頼(強み・実績)で終わる」サンドイッチ構造でコンセプト「半世紀の信頼」を体現。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">04 事業領域</span><div class="inner">
+      <div class="h-sec"><span class="en">SERVICE</span>私たちの事業領域</div>
+      <div class="grid g3">
+        <div class="card"><div class="ph img"></div><b>添乗・ツアーコンダクター</b><p>旅の最前線を支える</p></div>
+        <div class="card"><div class="ph img"></div><b>空港・エアライン</b><p>羽田・成田の現場</p></div>
+        <div class="card"><div class="ph img"></div><b>インバウンド・通訳</b><p>訪日客をおもてなし</p></div>
+        <div class="card"><div class="ph img"></div><b>MICE・イベント運営</b><p>学会・大会の運営</p></div>
+        <div class="card"><div class="ph img"></div><b>人材派遣</b><p>接遇のプロを派遣</p></div>
+        <div class="card"><div class="ph img"></div><b>研修・教育</b><p>旅程管理・資格支援</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>数字で信頼を作った直後に「で、何ができるか」を具体化。添乗も空港もMICEも一社で頼める事業の幅を面で見せる(田中さんCJMの比較検討)。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">05 TEIの強み／導入事例・実績</span><div class="inner">
+      <div class="two">
+        <div><div class="bar l"></div><div class="bar m"></div><div class="bar l"></div><div class="bar s"></div>
+          <div style="margin-top:8px;font-size:12px;color:#888">観光業界の人材派遣のパイオニア／即戦力・接遇のプロ</div></div>
+        <div class="ph img" style="height:120px"></div>
+      </div>
+      <div class="grid g2" style="margin-top:12px">
+        <div class="card"><b>導入事例・お客様の声</b><p>実績と取引先の信頼(A.4に集約)</p></div>
+        <div class="card"><b>会社沿革</b><p>50年の歩み</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>事業→数字で理解した相手に「だから信頼できる」を確定。導入事例・実績はA.4に統合した独立項目へ(取引先は実績の中で見せる／独立ページではない)。田中さんCJMの信頼確認フェーズの決定打。</div>
+    </div></div>
+
+    <div class="blk" style="background:#faf6ec"><span class="tagno" style="background:#b8860b">06 「働く」への送客（3導線）</span><div class="inner">
+      <div class="secname" style="color:#8a6d10">TEIで働きたい方へ ／ 目的別に入口を分ける</div>
+      <div class="grid g3">
+        <div class="card" style="background:#fff;border-color:#e6d29a">
+          <div class="zonetag" style="background:#f3e5c0;color:#8a6d10">① 社員になる ★最優先</div>
+          <b>採用情報（新卒・キャリア）</b>
+          <p>正社員・契約社員として入社。4職種／現場＋内勤。</p>
+          <span class="btn" style="background:#b8860b;margin-top:6px">採用情報を見る →<br><span style="font-size:10px;opacity:.8">/recruit/</span></span>
+        </div>
+        <div class="card" style="background:#fff;border-color:#a8c7d6">
+          <div class="zonetag" style="background:#e0eef4;color:#2c6683">② 専門職で働く（未経験歓迎）</div>
+          <b>採用専門サイト</b>
+          <p>添乗員・通訳ガイド・インバウンド。未経験から研修・資格支援でプロへ。</p>
+          <span class="btn" style="background:#3E7C9B;margin-top:6px">専門採用サイトへ →<br><span style="font-size:10px;opacity:.8">/expert/</span></span>
+        </div>
+        <div class="card" style="background:#fff;border-color:#ccc">
+          <div class="zonetag">③ 登録して働く（案件型）</div>
+          <b>お仕事をお探しの方</b>
+          <p>単発・週1・扶養内などの案件で働く登録スタッフ。</p>
+          <span class="btn" style="background:#666;margin-top:6px">求人を探す ↗<br><span style="font-size:10px;opacity:.8">tei-job.com（外部・既存）</span></span>
+        </div>
+      </div>
+      <div class="note"><b>狙い：</b>求職者を「社員採用／専門サイト(添乗員・通訳ガイド・インバウンドの常時募集)／登録して案件で働く(tei-job)」で迷わせず振り分け。①②は統合サイト内、③は外部リンク送客。専門サイトは社員志望・登録志望の両方を受け止める(片桐さん確認済み)。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">07 コラム ★新設（SEO/GEO資産）</span><div class="inner">
+      <div class="h-sec"><span class="en">COLUMN</span>観光・人材のコラム</div>
+      <div class="grid g3">
+        <div class="card"><div class="ph img" style="height:70px"></div><b>コラム記事</b><p>業界動向</p></div>
+        <div class="card"><div class="ph img" style="height:70px"></div><b>コラム記事</b><p>働き方・キャリア</p></div>
+        <div class="card"><div class="ph img" style="height:70px"></div><b>コラム記事</b><p>観光トレンド</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>コラム(A.5)を独立セクションで露出。業界動向・働き方を継続発信し、検索・AI検索(GEO)からの自然流入を獲得する資産。カード表示で回遊を促す。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">08 研修・セミナー事業（別サイトへ送客）</span><div class="inner">
+      <div class="two">
+        <div>
+          <div class="zonetag">BtoB事業への送客</div>
+          <div style="font-size:15px;font-weight:800;color:#333">企業研修・人材育成をお考えの方へ</div>
+          <div style="font-size:12.5px;color:#888;margin-top:6px">接遇・CS・クレーム対応・コンプラ等の企業研修。専門サイトで詳しくご案内。</div>
+          <span class="btn" style="background:#2C5F2D">研修・セミナーサイトへ ↗<br><span style="font-size:10px;opacity:.8">tei-seminar.com（外部・既存の別サイト）</span></span>
+        </div>
+        <div class="ph img" style="height:100px"></div>
+      </div>
+      <div class="note"><b>狙い：</b>研修・セミナーは tei-seminar.com という独立した別サイト。事業紹介の1ページに埋めず、tei-job同様「外部の専門サイトへの送客ブロック」として独立させBtoB訴求。お知らせと同居させない(性質が違う)。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">09 お知らせ / NEWS</span><div class="inner">
+      <div class="secname">お知らせ / NEWS</div>
+      <div class="bar l"></div><div class="bar l"></div><div class="bar m"></div>
+      <div class="note"><b>狙い：</b>更新情報(お知らせ)は重要度が低いためTOP下部・フッター直前に配置。コラム(発信資産)とは分離。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">10 フッター</span><div class="inner">
+      <div class="foot-wire"><span>会社情報／事業一覧／導入事例・実績／コラム／採用情報／専門採用／よくある質問(FAQ)／お仕事をお探しの方(tei-job)↗／研修サービス(tei-seminar)↗／お問い合わせ／個人情報保護方針／EN</span><span>© TEI</span></div>
+      <div class="note"><b>狙い：</b>関連サイト(tei-job／tei-seminar)＋規約系(個人情報保護方針)をフッター常設。統合サイトを"TEIの入口"として機能させる。</div>
+    </div></div>
+
+  </div>
+</div>
+
+<div class="page" id="recruit">
+  <div class="legend">
+    <span class="k"><span class="sw b"></span>要素の枠</span>
+    <span class="k"><span class="sw n"></span>配置の狙い</span>
+    <span class="k crumb">パンくず：ホーム ＞ 採用情報</span>
+  </div>
+  <div class="chrome"><i></i><i></i><i></i><span class="url">https://www.t-e-i.co.jp/recruit/</span></div>
+  <div class="cross"><b>主ターゲット：</b>新卒・総合職（佐藤美咲21）★最優先。CJMの「不安解消フェーズ」で離脱させないことが最重要。</div>
+  <div class="mock">
+
+    <div class="blk"><span class="tagno">01 ヘッダー</span><div class="inner">
+      <div class="nav-wire"><span class="logo">TEI 採用</span>
+        <span class="lk">職種を知る</span><span class="lk">社員紹介</span><span class="lk">研修・キャリア</span><span class="lk">働く環境</span><span class="lk">募集要項</span>
+        <span class="sp"></span>
+        <span class="lk" style="font-size:11.5px">専門サイト ↗</span>
+        <span class="lk" style="font-size:11.5px">お仕事をお探しの方 ↗</span>
+        <span class="ig-icon" title="Instagram">IG</span>
+        <span class="lk" style="font-size:11.5px">よくある質問</span>
+        <span class="cta" style="background:#b8860b">エントリー</span></div>
+      <div class="crumb">ホーム ＞ 採用情報（同一ドメイン内／コーポと共通ヘッダーから遷移）</div>
+      <div class="note"><b>狙い：</b>採用ナビにも「お仕事をお探しの方 ↗(tei-job)」を常設。社員志望と登録志望を取り違えた人を、スクロール前にヘッダーで振り分け。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">02 メインビジュアル</span><div class="inner">
+      <div class="mv"><div class="copy">
+        <div class="h-hero">現場で輝き、オフィスで支える。<span class="sub">あなたらしいキャリアが、一生の仕事になる場所。</span></div>
+      </div></div>
+      <div class="note"><b>狙い：</b>確定主コピーをMV上に配置。「現場＋内勤」の独自性を最初に提示し、"長く働けるか"という最大の関心に冒頭で応える。<b>ビジュアルは働く社員の輝く姿</b>(憧れられるブランド)。※ボタンは置かず、下のメッセージ→職種へ自然に読み進めさせる。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">03 メッセージ（新卒向け）</span><div class="inner">
+      <div class="two">
+        <div>
+          <div class="secname">MESSAGE ／ TEIで働くということ</div>
+          <div style="font-size:16px;font-weight:800;color:#5a4708;line-height:1.7">旅と人が好きなあなたへ。<br>半世紀つづく現場で、あなたの"好き"を一生の仕事に。</div>
+          <div class="bar l"></div><div class="bar m"></div><div class="bar l"></div>
+        </div>
+        <div class="ph img" style="height:120px"></div>
+      </div>
+      <div class="note"><b>狙い：</b>MV直後に新卒向けメッセージで"つかむ"(サイトマップA.15.1)。いきなり職種カタログでなく、TEIで働く魅力・らしさを一言で伝え、興味を温めてから職種へ。「憧れられるブランド」の入口。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">04 職種紹介（4区分）</span><div class="inner">
+      <div class="h-sec"><span class="en">JOBS</span>4つの職種で活躍できる</div>
+      <div class="grid g2">
+        <div class="card"><div class="ph img"></div><b>正社員／総合職（営業・コーディネーター）</b><p>クライアントとスタッフをつなぐ司令塔</p></div>
+        <div class="card"><div class="ph img"></div><b>添乗専門契約社員（現場＋内勤）</b><p>ツアーに同行＋オフィス業務<br><span style="color:#3E7C9B;font-weight:700">→ 詳細は専門サイトへ</span></p></div>
+        <div class="card"><div class="ph img"></div><b>インバウンド専門契約社員（現場＋内勤）</b><p>多言語で訪日客対応＋内勤<br><span style="color:#3E7C9B;font-weight:700">→ 詳細は専門サイトへ</span></p></div>
+        <div class="card"><div class="ph img"></div><b>空港専門契約社員（羽田・成田／現場＋内勤）</b><p>空港の最前線＋内勤</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>MV直後に「どんな仕事があるか」を提示(新卒の意思決定は仕事から)。片桐さん確定4区分・全職種「現場＋内勤」＝独自性。<b>添乗員・インバウンドは概要のみ→専門サイトへ送客</b>(ハブ&スポーク／A.15.1.2-3)。空港は採用ページ内で完結。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">05 社員紹介（先輩インタビュー / 社員の一日）</span><div class="inner">
+      <div class="grid g2">
+        <div class="card"><div class="ph img" style="height:90px"></div><b>社員紹介</b><p>入社3年目・総合職</p></div>
+        <div class="card"><div class="ph img" style="height:90px"></div><b>社員紹介</b><p>インバウンド専門</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>仕事(職種)の次は「どんな人が働くか」。「3年後の自分が想像できるか」に等身大の社員像で応え自分事化(CJMの興味・検討)。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">06 研修・キャリアパス</span><div class="inner">
+      <div class="two"><div>
+        <div class="bar l"></div><div class="bar m"></div><div class="bar l"></div>
+        <div style="font-size:12px;color:#888;margin-top:8px">入社後の研修 → 資格支援(旅程管理主任者等) → ステップアップ</div>
+      </div><div class="ph img" style="height:100px"></div></div>
+      <div class="note"><b>狙い：</b>「成長できるか・長く働けるか」に応える。※「研修・資格支援がある」の確定範囲。具体の育成フローは7/17後に肉付け。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">07 働く環境（福利厚生・女性活躍・数字）</span><div class="inner">
+      <div class="secname">WORK ENVIRONMENT ／ 安心して長く働ける</div>
+      <div class="stats">
+        <div class="stat"><b>60-70%</b><span>女性スタッフ比率</span></div>
+        <div class="stat"><b>1976</b><span>創業・安定基盤</span></div>
+        <div class="stat"><b>—</b><span>定着率 ※要確認</span></div>
+        <div class="stat"><b>—</b><span>産育休実績 ※要確認</span></div>
+      </div>
+      <div style="margin-top:12px;font-size:12.5px;color:#888">女性が活躍（6〜7割が女性）／ライフステージに合わせた働き方／福利厚生・産育休 ※制度内容は要確認 — をまとめて1セクションで紹介</div>
+      <div class="note"><b>狙い：</b>佐藤さんCJM最大の不安「女性が結婚・出産後も働き続けられるか」に応える決定打。<b>数字(女性比率・定着・産育休)を"働く環境"に内包</b>(サイトマップA.15.4.1)＝安心を数字と制度の両輪で証明。女性比率は確定、定着率等は7/17要確認。</div>
+    </div></div>
+
+
+    <div class="blk"><span class="tagno">08 募集要項・選考フロー</span><div class="inner">
+      <div class="two">
+        <div>
+          <div class="secname">REQUIREMENTS ／ 募集要項</div>
+          <div style="font-size:12.5px;color:#888">職種別の給与・勤務地・応募資格・雇用形態（正社員／契約社員）。※詳細は要確認</div>
+          <div class="bar l"></div><div class="bar m"></div>
+        </div>
+        <div>
+          <div class="secname">FLOW ／ 選考フロー</div>
+          <div class="grid g4" style="margin-top:4px">
+            <div class="card" style="padding:8px"><b>1</b><p>エントリー</p></div>
+            <div class="card" style="padding:8px"><b>2</b><p>説明会</p></div>
+            <div class="card" style="padding:8px"><b>3</b><p>面接</p></div>
+            <div class="card" style="padding:8px"><b>4</b><p>内定</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>狙い：</b>応募直前に一番見られる募集要項(baigie調査:求職者が見るのは募集要項51%)＋選考フローを本文に配置(サイトマップA.15.6-7)。給与・勤務地・応募資格・選考ステップで最終判断させエントリーへ繋ぐ。</div>
+    </div></div>
+
+    <div class="blk" style="background:#faf6ec"><span class="tagno" style="background:#b8860b">09 エントリー導線</span><div class="inner">
+      <div style="text-align:center">
+        <div style="font-size:18px;font-weight:800;color:#5a4708">まずは、話を聞きにきませんか？</div>
+        <div style="font-size:12.5px;color:#8a7a4a;margin:6px 0">よくある質問(FAQ)で疑問を解消 → 募集要項の確認 → かんたんエントリー</div>
+        <span class="btn" style="background:#666">よくある質問(FAQ)</span> <span class="btn" style="background:#b8860b">かんたんエントリー →</span>
+      </div>
+      <div class="note"><b>狙い：</b>応募直前の不安をFAQで解消してからエントリーへ(サイトマップA.15.8 FAQ)。EFOで離脱防止。FAQはGEO/AIO・JSON-LD対象＝AI検索の入口にも。</div>
+    </div></div>
+
+    <div class="blk" style="background:#f3f6f8"><span class="tagno" style="background:#3E7C9B">10 登録して働きたい方へ（振り分け）</span><div class="inner">
+      <div class="two">
+        <div>
+          <div class="zonetag" style="background:#e0eef4;color:#2c6683">案件型で働きたい方はこちら</div>
+          <div style="font-size:15px;font-weight:800;color:#2c6683">単発・週1・扶養内で働きたい方は「お仕事をお探しの方」へ</div>
+          <div style="font-size:12.5px;color:#5a6a72;margin-top:6px">社員採用(このページ)とは別に、登録して案件で働く選択肢もあります。</div>
+          <span class="btn" style="background:#666">求人を探す ↗ tei-job.com（外部）</span>
+        </div>
+        <div class="ph img" style="height:90px"></div>
+      </div>
+      <div class="note"><b>狙い：</b>「社員になりたい人」と「登録して案件で働きたい人」を取り違えさせない。誤って離脱する求職者を既存の求人サイト(tei-job)へ正しく送客。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">11 Instagram 連携（最新の投稿／認知の入口）</span><div class="inner">
+      <div class="secname">SNS ／ 認知の入口</div>
+      <div class="grid g4"><div class="ph img" style="height:64px"></div><div class="ph img" style="height:64px"></div><div class="ph img" style="height:64px"></div><div class="ph img" style="height:64px"></div></div>
+      <div class="note"><b>狙い：</b>Instagramは認知の入口(サイトに来る前の接点)。本文末尾に最新投稿を置き、ヘッダー/フッターにアイコンリンク常設。フィード枠は着脱可能。認知はSNS→来訪、サイト内では締めに配置。</div>
+    </div></div>
+
+
+  </div>
+</div>
+
+<div class="page" id="cond">
+  <div class="legend">
+    <span class="k"><span class="sw b"></span>要素の枠</span>
+    <span class="k"><span class="sw n"></span>配置の狙い</span>
+    <span class="k crumb">同ドメイン内・採用専門サイト（添乗員／通訳ガイド／インバウンド）</span>
+  </div>
+  <div class="chrome"><i></i><i></i><i></i><span class="url">https://www.t-e-i.co.jp/expert/</span></div>
+  <div class="cross"><b>位置づけ：</b>専門登録（コア人材）の常時募集サイト。社員（契約社員）志望・登録スタッフ志望の両方を受け止める。<b>添乗員を主軸に設計</b>し、通訳ガイド・インバウンドは仕事紹介で訴求（各ゾーンの本格展開はPhase2）。主ペルソナ＝未経験・30代主婦（鈴木あかり）。</div>
+  <div class="mock">
+
+    <div class="blk"><span class="tagno">01 ヘッダー</span><div class="inner">
+      <div class="nav-wire"><span class="logo">TEI 専門採用</span>
+        <span class="lk">仕事を知る</span><span class="lk">研修・資格 ★</span><span class="lk">給与・働き方</span><span class="lk">なるまでの流れ</span><span class="lk">先輩インタビュー</span>
+        <span class="sp"></span>
+        <span class="lk" style="font-size:11.5px">新卒採用 ↗</span>
+        <span class="lk" style="font-size:11.5px">お仕事をお探しの方 ↗</span>
+        <span class="ig-icon" title="Instagram">IG</span>
+        <span class="lk" style="font-size:11.5px">よくある質問</span>
+        <span class="cta" style="background:#3E7C9B">エントリー（応募・登録）</span></div>
+      <div class="crumb">ホーム ＞ 採用専門サイト（同ドメイン内・常時募集）</div>
+      <div class="note"><b>狙い：</b>案件型で働きたい人には「お仕事をお探しの方 ↗(tei-job)」を常設で振り分け。CVボタンは応募・登録の両方を受ける表記に。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">02 メインビジュアル</span><div class="inner">
+      <div class="mv"><div class="copy">
+        <div class="h-hero">完全未経験から、憧れの旅のプロへ。<span class="sub">50年で培った研修が、あなたの第一歩を支えます。</span></div>
+        <div class="btns"><span class="btn">1分で応募・登録</span></div>
+      </div></div>
+      <div class="note"><b>狙い：</b>確定主コピーをMV上に配置し「未経験でも大丈夫」を冒頭提示。※「研修が支える」は確定範囲。"未経験から育つ先輩"の断定は入れない。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">03 初めてでも、だいじょうぶ（未経験歓迎）</span><div class="inner">
+      <div style="background:#eef4f7;border-radius:8px;padding:18px 16px">
+        <div style="font-size:18px;font-weight:800;color:#1f3d4d">はじめてでも、だいじょうぶ。</div>
+        <div style="font-size:13px;color:#5a6a72;margin-top:6px">未経験歓迎／手厚い研修／資格取得を会社が支援／選べる働き方。旅と人が好きなあなたの第一歩を、50年の研修が支えます。</div>
+      </div>
+      <div class="grid g3" style="margin-top:12px">
+        <div class="card"><b>未経験歓迎</b><p>主婦・学生・社会人から</p></div>
+        <div class="card"><b>手厚い研修</b><p>基礎から資格取得まで支援</p></div>
+        <div class="card"><b>選べる働き方</b><p>週1・扶養内・Wワークも</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>MV直後に「初めてでも大丈夫」を独立セクションで宣言＝未経験主婦(鈴木さん)の最大の不安「私にできる？」にまず感情的な安心で答える(職種選択より前)。研修は後段(05)で"証拠"として深掘り。※「未経験から育った先輩」の断定は避ける。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">04 職種で選ぶ（3職種の入口）</span><div class="inner">
+      <div class="h-sec"><span class="en">JOBS</span>あなたの活躍するフィールドを選ぶ</div>
+      <div class="grid g3">
+        <div class="card"><div class="ph img"></div><b>添乗員 ★主軸</b><p>ツアーに同行し旅の感動を支える。未経験歓迎。</p></div>
+        <div class="card"><div class="ph img"></div><b>通訳ガイド</b><p>語学を活かし訪日客を案内。資格取得も支援。</p></div>
+        <div class="card"><div class="ph img"></div><b>インバウンド</b><p>多言語で訪日客対応。語学スキルを仕事に。</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>看板の3職種を入口として提示(＝サイトマップA.16.2〜4の職種別「仕事を知る」)。添乗員に★でコア導線を強調。通訳・インバウンドは仕事紹介で訴求(Phase2で各ゾーン拡張)。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">05 研修・資格サポート ★核</span><div class="inner">
+      <div class="secname">TRAINING ／ このサイトの決定打（"だいじょうぶ"の証拠）</div>
+      <div class="grid g3">
+        <div class="card"><b>基礎研修</b><p>仕事の基本を学ぶ</p></div>
+        <div class="card"><b>資格取得支援</b><p>旅程管理／通訳案内士など。会社が支援</p></div>
+        <div class="card"><b>デビューまでのサポート</b><p>※具体内容は7/17確認後に確定</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>03「初めてでも大丈夫」の宣言を、研修・資格支援という"手段・証拠"で裏づける。不安解消の核。※通訳ガイド向けに語学資格(通訳案内士等)支援も明記。「未経験から育った先輩」の断定は避ける／初回同行サポートは7/17要確認。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">06 給与・待遇・働き方</span><div class="inner">
+      <div class="grid g4">
+        <div class="stat"><b>日当</b><span>経験・エリアに応じて</span></div>
+        <div class="stat"><b>手当</b><span>資格・海外・宿泊ほか</span></div>
+        <div class="stat"><b>週1〜</b><span>扶養内・Wワーク可</span></div>
+        <div class="stat"><b>50年</b><span>実績</span></div>
+      </div>
+      <div class="note"><b>狙い：</b>「扶養内・週数日で働けるか」に具体で回答。給与額は要確認のため枠のみ。社員(契約社員)と登録で条件が違う点は応募段階で明示。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">07 プロになるまでの流れ（STEP）</span><div class="inner">
+      <div class="secname">STEP ／ 応募〜デビュー</div>
+      <div class="grid g4">
+        <div class="card"><b>STEP1</b><p>応募・登録</p></div>
+        <div class="card"><b>STEP2</b><p>面談・説明</p></div>
+        <div class="card"><b>STEP3</b><p>研修・資格取得</p></div>
+        <div class="card"><b>STEP4</b><p>デビュー</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>3職種共通の流れを提示(※添乗員の例。他職種も同様の研修フロー)。ゴールまでの道のりを見せて不安を下げる。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">08 先輩インタビュー / 社員の一日</span><div class="inner">
+      <div class="grid g3">
+        <div class="card"><div class="ph img" style="height:90px"></div><b>先輩インタビュー</b><p>添乗員／主婦から</p></div>
+        <div class="card"><div class="ph img" style="height:90px"></div><b>先輩インタビュー</b><p>添乗員／両立しながら</p></div>
+        <div class="card"><div class="ph img" style="height:90px"></div><b>先輩インタビュー</b><p>語学を活かして（通訳/IB）</p></div>
+      </div>
+      <div class="note"><b>狙い：</b>同じ立場だった先輩の実例で背中を押す。<b>添乗員中心＋各職種</b>(人数配分は片桐さんと要相談)。※実在の先輩取材が前提(取材撮影は提案に含む＝確定OK)。</div>
+    </div></div>
+
+    <div class="blk" style="background:#eef4f7"><span class="tagno" style="background:#3E7C9B">09 応募・登録（2導線）</span><div class="inner">
+      <div class="two">
+        <div class="card" style="background:#fff;border-color:#a8c7d6">
+          <b>① 社員として応募</b><p>契約社員(現場＋内勤)として腰を据えて働きたい方 → 自社採用フロー</p>
+          <span class="btn" style="background:#3E7C9B;margin-top:6px">社員採用に応募 →</span>
+        </div>
+        <div class="card" style="background:#fff;border-color:#ccc">
+          <b>② 登録して働く</b><p>週1・扶養内・案件ベースで働きたい方 → 登録(tei-job)</p>
+          <span class="btn" style="background:#666;margin-top:6px">かんたん登録 ↗</span>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:12px"><span class="btn" style="background:#666">よくある質問(FAQ)</span></div>
+      <div class="note"><b>狙い：</b>専門サイトは社員志望・登録志望の両方を受け止める。応募段階で①社員採用＝自社フロー／②登録＝tei-job、の2択に分岐させ迷子を防ぐ。応募の直前に<b>FAQ(A.16.6)</b>で未経験の不安を解消(GEO/AIO・JSON-LD対象)。</div>
+    </div></div>
+
+    <div class="blk"><span class="tagno">10 Instagram 連携（フィード枠）</span><div class="inner">
+      <div class="secname">SNS ／ 認知の入口（着脱可能）</div>
+      <div class="grid g4"><div class="ph img" style="height:64px"></div><div class="ph img" style="height:64px"></div><div class="ph img" style="height:64px"></div><div class="ph img" style="height:64px"></div></div>
+      <div class="note"><b>狙い：</b>Instagram(新設)で仕事の様子・研修を発信し未経験層の認知をつくる。フィード枠は運用支援とセットの着脱可能モジュール(運用しない場合は外してもレイアウト維持、フッターにアイコンリンク常設)。</div>
+    </div></div>
+
+
+  </div>
+</div>
+
+</div>
+<script>
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('show'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.p).classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
